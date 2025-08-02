@@ -1,7 +1,10 @@
+package Geo;
 /**
  * Velocity specifies the change in position on the `x` and the `y` axes.
  */
 public class Velocity {
+
+    private static final int ANGLE_OFFSET = -90;
     private double dx;
     private double dy;
 
@@ -22,7 +25,7 @@ public class Velocity {
      * @return velocity
      */
     public static Velocity fromAngleAndSpeed(double angle, double speed) {
-        double radians = Math.toRadians(angle);
+        double radians = Math.toRadians(angle + ANGLE_OFFSET);
         double dx = Math.cos(radians) * speed;
         double dy = Math.sin(radians) * speed;
         return new Velocity(dx, dy);
@@ -84,4 +87,26 @@ public class Velocity {
     public Point applyToPoint(Point p) {
         return new Point(p.getX() + dx, p.getY() + dy);
     }
+
+    /**
+     * Changes this velocity's angle to the given angle (in degrees),
+     * keeping the current speed.
+     *
+     * @param angleDegrees the new angle in degrees
+     * @return updated velocity
+     */
+    public Velocity changeAngle(double angleDegrees) {
+        // Calculate the current speed
+        double speed = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
+
+        // Convert degrees to radians
+        double angleRadians = Math.toRadians(angleDegrees + ANGLE_OFFSET);
+
+        // Calculate new dx and dy using the new angle
+        double newDx = Math.cos(angleRadians) * speed;
+        double newDy = Math.sin(angleRadians) * speed;
+
+        return new Velocity(newDx, newDy);
+    }
+
 }

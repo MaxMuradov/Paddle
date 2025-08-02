@@ -1,3 +1,5 @@
+package Geo;
+
 /**
  * class Line.
  */
@@ -35,6 +37,21 @@ public class Line {
         this.end = new Point(x2, y2);
     }
 
+    /**
+     * Getter of start point of the line.
+     * @return start point
+     */
+    public Point getStart() {
+        return this.start;
+    }
+
+    /**
+     * Getter of end point of the line.
+     * @return end point
+     */
+    public Point getEnd() {
+        return this.end;
+    }
     /**
      * find length of segment.
      * @return length in double
@@ -181,6 +198,32 @@ public class Line {
     public boolean equals(Line other) {
         return (start.equals(other.start()) && end.equals(other.end()))
                 || (start.equals(other.end()) && end.equals(other.start()));
+    }
+
+
+    /**
+     * If this line does not intersect with the rectangle, return null.
+     * Otherwise, return the closest intersection point to the
+     * start of the line.
+     * @param rect
+     * @return point
+     */
+    public Point closestIntersectionToStartOfLine(Rectangle rect) {
+        double minDist = Double.MAX_VALUE;
+        java.util.List<Point> l = rect.intersectionPoints(this);
+        Point returnP = null;
+
+        for (Point point : l) {
+            if (point != null) {
+                double len = new Line(this.start, point).length();
+                if (minDist > len) {
+                    minDist = len;
+                    returnP = point;
+                }
+            }
+        }
+
+        return returnP;
     }
 }
 

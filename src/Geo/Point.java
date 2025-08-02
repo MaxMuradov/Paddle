@@ -1,10 +1,13 @@
+package Geo;
+import biuoop.DrawSurface;
+
 /**
  * class Point.
  */
 public class Point {
 
-    private final double x;
-    private final double y;
+    private double x;
+    private double y;
 
     /**
      * Constructor for class Point.
@@ -31,7 +34,11 @@ public class Point {
      * @return true if equals
      */
     public boolean equals(final Point other) {
-        return (Math.abs(this.x - other.getX()) < 1e-9 && Math.abs(this.y - other.getY()) < 1e-9);
+        if (other == null) {
+            return false;
+        } else {
+            return (Math.abs(this.x - other.getX()) < 1e-9 && Math.abs(this.y - other.getY()) < 1e-9);
+        }
     }
 
     /**
@@ -71,6 +78,14 @@ public class Point {
     }
 
     /**
+     * Set new X-coord.
+     * @param x new X-coord
+     */
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    /**
      * Getter of y coord.
      * @return y coord of point
      */
@@ -79,27 +94,47 @@ public class Point {
     }
 
     /**
+     * Set new Y-coord.
+     * @param y new Y-coord
+     */
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    /**
      * Never actually used so whatever.
-     * @param frame frame
+     * @param rect frame
      * @return possition in relation to a line
      */
-    boolean inFrame(Line[] frame) {
+    public boolean inFrame(Rectangle rect) {
         // Initialize boundaries
-        double xMin = Double.MAX_VALUE, xMax = Double.MIN_VALUE;
-        double yMin = Double.MAX_VALUE, yMax = Double.MIN_VALUE;
-
-        // Find the min and max coordinates for the entire frame
-        for (int i = 0; i < frame.length; i++) {
-            xMin = Math.min(xMin, Math.min(frame[i].start().x, frame[i].end().x));
-            xMax = Math.max(xMax, Math.max(frame[i].start().x, frame[i].end().x));
-            yMin = Math.min(yMin, Math.min(frame[i].start().y, frame[i].end().y));
-            yMax = Math.max(yMax, Math.max(frame[i].start().y, frame[i].end().y));
-        }
+        double xMin = rect.getUpperLeft().getX(), xMax = xMin + rect.getWidth();
+        double yMin = rect.getUpperLeft().getY(), yMax = yMin + rect.getHeight();
 
         // Check if this object's position is within the bounding box
         return (this.getX() >= xMin && this.getX() <= xMax)
                 && (this.getY() >= yMin && this.getY() <= yMax);
     }
 
+    /**
+     * Teleports point to new location.
+     * @param p new point
+     * @return updated point
+     */
+    public Point teleportTo(Point p) {
+        this.x = p.getX();
+        this.y = p.getY();
+        return this;
+    }
+
+    /**
+     * Check if point in border of DrawSurface "almost".
+     * @param d Drawsurface
+     * @return true/false
+     */
+    public boolean inBorderOfDrawsurface(DrawSurface d) {
+        // -50 so paddle leaves screen smoothly.
+        return (this.x < d.getWidth() && this.x > -50) && (this.y < d.getHeight() && this.y > 0);
+    }
 }
 
